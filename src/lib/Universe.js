@@ -5,7 +5,7 @@ export class Universe {
         this.cells = new Uint8Array(width * height)
 
         this.cells.forEach((_, i) => {
-            this.cells[i] = (i % 11 === 0 || i % 629 === 0) ? 1 : 0;
+            this.cells[i] = (i % 2 === 0 || i % 11 === 0 || i % 629 === 0) ? 1 : 0;
         });
     }
 
