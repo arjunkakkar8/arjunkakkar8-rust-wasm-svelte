@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import init, { Universe } from "$lib/assets/wasm/rust";
+  import init, { Universe } from "$lib/wasm/rust";
   import RenderLife from "$lib/components/RenderLife.svelte";
   import params from "$lib/params";
 
@@ -23,7 +23,11 @@
       }
       t1 = performance.now();
 
-      data = new Uint8Array(wasm.memory.buffer, universe.cells(), $params.rows * $params.cols);
+      data = new Uint8Array(
+        wasm.memory.buffer,
+        universe.cells(),
+        $params.rows * $params.cols
+      );
       requestAnimationFrame(render);
     });
   });
@@ -31,9 +35,8 @@
 
 <div>
   <h3>
-    WASM Iterations: {totalIterations}, Time for last {$params.repeatIters} iterations: {Math.round(
-      t1 - t0
-    )}ms
+    WASM Iterations: {totalIterations}, Time for last {$params.repeatIters} iterations:
+    {Math.round(t1 - t0)}ms
   </h3>
   <RenderLife {data} />
 </div>

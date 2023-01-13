@@ -1,44 +1,35 @@
 <script>
   import params from "$lib/params";
+  import { onMount } from "svelte";
 
   export let data;
 
-  const pixelWidth = $params.width / $params.cols;
-  const pixelHeight = $params.height / $params.rows;
+  let canvas, ctx, canvasData;
 
-  let canvas;
+  onMount(() => {
+    ctx = canvas.getContext("2d");
+    canvasData = ctx.createImageData($params.rows, $params.cols);
+  });
 
   const render = () => {
-    let ctx = canvas?.getContext("2d");
-
     if (!ctx) {
       return;
     }
 
-    ctx.beginPath();
     data.forEach((val, i) => {
-      const rowNum = Math.floor(i / $params.cols);
-      const colNum = i % $params.cols;
-      ctx.fillStyle = val === 1 ? "black" : "white";
-      ctx.fillRect(
-        colNum * pixelWidth,
-        rowNum * pixelHeight,
-        pixelWidth,
-        pixelHeight
-      );
+      canvasData.data[i * 4] = val === 1 ? 0 : 255;
+      canvasData.data[i * 4 + 1] = val === 1 ? 0 : 255;
+      canvasData.data[i * 4 + 2] = val === 1 ? 0 : 255;
+      canvasData.data[i * 4 + 3] = 255;
     });
-    ctx.stroke();
+
+    ctx.putImageData(canvasData, 0, 0);
   };
 
   $: data, render();
 </script>
 
-<canvas
-  bind:this={canvas}
-  width={$params.width}
-  height={$params.height}
-  style="width: {$params.width}px; height: {$params.height}px;"
-/>
+<canvas bind:this={canvas} width={$params.cols} height={$params.rows} />
 
 <style>
   canvas {
